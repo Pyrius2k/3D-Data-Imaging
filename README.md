@@ -11,8 +11,8 @@ This repository provides a collection of Python scripts for 3D data imaging, poi
 ## 📁 Contents
 
 - [`Ballpivot.py`](./Ballpivot.py) - Generate surface meshes from point clouds using Ball Pivoting.
-- [`poisson_reconstruction.py`](./poisson_reconstruction.py) - Reconstruct watertight meshes using Poisson Surface Reconstruction.
-- [`image_to_3d.py`](./image_to_3d.py) - Convert 2D RGB images to 3D point clouds using depth estimation.
+- [`Poisson.py`](./Poisson.py) - Reconstruct watertight meshes using Poisson Surface Reconstruction.
+- [`2dto3d.py`](./2dto3d.py) - Convert 2D RGB images to 3D point clouds using depth estimation.
 
 ---
 
