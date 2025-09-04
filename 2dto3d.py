@@ -9,7 +9,7 @@ import open3d as o3d
 import torch
 from transformers import AutoImageProcessor, AutoModelForDepthEstimation
 
-# Benutzerdefinierte Funktion für die orthographische Projektion
+# User-defined function for orthographic projection
 def depth_to_pointcloud_orthographic(depth_map, image, scale_factor=255):
     height, width = depth_map.shape
     y, x = np.meshgrid(np.arange(height), np.arange(width), indexing='ij')
@@ -31,13 +31,13 @@ def depth_to_pointcloud_orthographic(depth_map, image, scale_factor=255):
 
     return inlier_cloud, z, height, width
 
-# --- Hauptskript ---
+# --- Main Script ---
 folder_path = Path("D:/Graphics/Bilder")
 export_path = Path("D:/Graphics/Results")
 exporting = True
 
 if not folder_path.exists():
-    print(f"Fehler: Der Pfad {folder_path} existiert nicht.")
+    print(f"Error: The path {folder_path} does not exist.")
     exit()
 
 if not export_path.exists():
@@ -55,7 +55,7 @@ for i in range(num_samples):
 
 checkpoint = "LiheYoung/depth-anything-large-hf"
 device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"Verwendetes Gerät: {device}")
+print(f"Using device: {device}")
 
 processor = AutoImageProcessor.from_pretrained(checkpoint)
 model = AutoModelForDepthEstimation.from_pretrained(checkpoint).to(device)
@@ -69,30 +69,30 @@ for i in range(num_samples):
     output_depth = output_depth.squeeze().cpu().numpy()
     depth_samples.append([selected_images[i], output_depth])
 
-# --- Verarbeite alle Bilder in einer einzigen Schleife ---
+# --- Process all images in a single loop ---
 for i in range(num_samples):
-    print(f"\nVerarbeite Bild {i+1}...")
+    print(f"\nProcessing image {i+1}...")
     
     depth_image_raw = depth_samples[i][1]
     color_image = depth_samples[i][0]
     width, height = depth_image_raw.shape
 
-    # 1. Plots anzeigen
+    # 1. Show plots
     fig, axs = plt.subplots(2, 1)
     axs[0].imshow(color_image)
-    axs[0].set_title('Originalbild')
+    axs[0].set_title('Original Image')
     axs[1].imshow(depth_image_raw, cmap='plasma')
-    axs[1].set_title('Tiefenschätzung')
+    axs[1].set_title('Depth Estimation')
     plt.tight_layout()
     plt.show()
 
-    # 2. Bilder für die Visualisierung speichern
+    # 2. Save images for visualization
     depth_image_display = (depth_image_raw * 255 / np.max(depth_image_raw)).astype('uint8')
     color_image_resized = cv2.resize(color_image, (height, width))
     cv2.imwrite(str(export_path / f'Results{i}.png'), cv2.cvtColor(color_image_resized, cv2.COLOR_BGR2RGB))
     cv2.imwrite(str(export_path / f'Results{i}_depth.png'), depth_image_display)
 
-    # 3. Perspektivische Projektion (Pinhole-Kamera)
+    # 3. Perspective Projection (Pinhole Camera)
     depth_o3d_persp = o3d.geometry.Image(depth_image_raw)
     image_o3d_persp = o3d.geometry.Image(color_image_resized)
     rgbd_image_persp = o3d.geometry.RGBDImage.create_from_color_and_depth(
@@ -105,25 +105,25 @@ for i in range(num_samples):
     pcd_persp = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image_persp, camera_intrinsic)
     pcd_persp.transform([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]])
 
-    # 4. Orthographische Projektion
+    # 4. Orthographic Projection
     pcd_ortho, _, _, _ = depth_to_pointcloud_orthographic(depth_image_raw, color_image_resized)
 
-    # 5. Visualisierung und Export der Ergebnisse
-    print(f"Zeige perspektivische Ansicht für Bild {i+1} an.")
+    # 5. Visualize and export the results
+    print(f"Displaying perspective view for image {i+1}.")
     o3d.visualization.draw_geometries([pcd_persp])
     
-    print(f"Zeige orthographische Ansicht für Bild {i+1} an.")
+    print(f"Displaying orthographic view for image {i+1}.")
     o3d.visualization.draw_geometries([pcd_ortho])
 
     if exporting:
         o3d.io.write_point_cloud(str(export_path / f'pcd_pinhole_{i}.ply'), pcd_persp)
         o3d.io.write_point_cloud(str(export_path / f'pcd_ortho_{i}.ply'), pcd_ortho)
-        print("Ergebnisse gespeichert.")
+        print("Results saved.")
 
-    # --- Mesh-Erstellung ---
-    # Normalen-Schätzung und Poisson-Rekonstruktion für beide Punktwolken
+    # --- Mesh Creation ---
+    # Normal estimation and Poisson reconstruction for both point clouds
     
-    # Mesh für Perspektivische Projektion
+    # Mesh for Perspective Projection
     pcd_persp.estimate_normals()
     pcd_persp.orient_normals_to_align_with_direction()
     mesh_persp, _ = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd_persp, depth=9)
@@ -132,7 +132,7 @@ for i in range(num_samples):
     if exporting:
         o3d.io.write_triangle_mesh(str(export_path / f'mesh_pinhole_{i}.obj'), mesh_persp, write_triangle_uvs=True)
 
-    # Mesh für Orthographische Projektion
+    # Mesh for Orthographic Projection
     pcd_ortho.estimate_normals()
     pcd_ortho.orient_normals_to_align_with_direction()
     mesh_ortho, _ = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd_ortho, depth=9)
