@@ -125,7 +125,11 @@ This project is licensed under the MIT License.
 
 ## 📚 References
 
-- [Open3D Documentation](https://www.open3d.org/)  
-- [MiDaS Depth Estimation](https://github.com/isl-org/MiDaS)  
-- Kazhdan et al. — Poisson Surface Reconstruction  
-- Bernardini et al. — Ball Pivoting Algorithm  
+📄 [![Open3D Documentation](https://img.shields.io/badge/Open3D%20Documentation-blue?style=for-the-badge)](https://www.open3d.org/)
+
+📄 [![MiDaS Depth Estimation](https://img.shields.io/badge/MiDaS%20Depth%20Estimation-green?style=for-the-badge)](https://github.com/isl-org/MiDaS)
+
+📄 [![Poisson Surface Reconstruction (Kazhdan et al.)](https://img.shields.io/badge/Poisson%20Surface%20Reconstruction-orange?style=for-the-badge)](https://www.cs.jhu.edu/~misha/Code/PoissonRecon/)
+
+📄 [![Ball Pivoting Algorithm (Bernardini et al.)](https://img.shields.io/badge/Ball%20Pivoting%20Algorithm-red?style=for-the-badge)](https://www.researchgate.net/publication/220494622_The_Ball-Pivoting_Algorithm_for_Surface_Reconstruction)
+
