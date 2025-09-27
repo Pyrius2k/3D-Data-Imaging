@@ -9,7 +9,6 @@ import open3d as o3d
 import torch
 from transformers import AutoImageProcessor, AutoModelForDepthEstimation
 
-# User-defined function for orthographic projection
 def depth_to_pointcloud_orthographic(depth_map, image, scale_factor=255):
     height, width = depth_map.shape
     y, x = np.meshgrid(np.arange(height), np.arange(width), indexing='ij')
@@ -31,7 +30,6 @@ def depth_to_pointcloud_orthographic(depth_map, image, scale_factor=255):
 
     return inlier_cloud, z, height, width
 
-# --- Main Script ---
 folder_path = Path("D:/Graphics/Bilder")
 export_path = Path("D:/Graphics/Results")
 exporting = True
@@ -69,7 +67,6 @@ for i in range(num_samples):
     output_depth = output_depth.squeeze().cpu().numpy()
     depth_samples.append([selected_images[i], output_depth])
 
-# --- Process all images in a single loop ---
 for i in range(num_samples):
     print(f"\nProcessing image {i+1}...")
     
@@ -77,7 +74,7 @@ for i in range(num_samples):
     color_image = depth_samples[i][0]
     width, height = depth_image_raw.shape
 
-    # 1. Show plots
+   
     fig, axs = plt.subplots(2, 1)
     axs[0].imshow(color_image)
     axs[0].set_title('Original Image')
@@ -86,13 +83,13 @@ for i in range(num_samples):
     plt.tight_layout()
     plt.show()
 
-    # 2. Save images for visualization
+   
     depth_image_display = (depth_image_raw * 255 / np.max(depth_image_raw)).astype('uint8')
     color_image_resized = cv2.resize(color_image, (height, width))
     cv2.imwrite(str(export_path / f'Results{i}.png'), cv2.cvtColor(color_image_resized, cv2.COLOR_BGR2RGB))
     cv2.imwrite(str(export_path / f'Results{i}_depth.png'), depth_image_display)
 
-    # 3. Perspective Projection (Pinhole Camera)
+   
     depth_o3d_persp = o3d.geometry.Image(depth_image_raw)
     image_o3d_persp = o3d.geometry.Image(color_image_resized)
     rgbd_image_persp = o3d.geometry.RGBDImage.create_from_color_and_depth(
@@ -105,10 +102,10 @@ for i in range(num_samples):
     pcd_persp = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image_persp, camera_intrinsic)
     pcd_persp.transform([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]])
 
-    # 4. Orthographic Projection
+    
     pcd_ortho, _, _, _ = depth_to_pointcloud_orthographic(depth_image_raw, color_image_resized)
 
-    # 5. Visualize and export the results
+ 
     print(f"Displaying perspective view for image {i+1}.")
     o3d.visualization.draw_geometries([pcd_persp])
     
@@ -120,10 +117,7 @@ for i in range(num_samples):
         o3d.io.write_point_cloud(str(export_path / f'pcd_ortho_{i}.ply'), pcd_ortho)
         print("Results saved.")
 
-    # --- Mesh Creation ---
-    # Normal estimation and Poisson reconstruction for both point clouds
-    
-    # Mesh for Perspective Projection
+  
     pcd_persp.estimate_normals()
     pcd_persp.orient_normals_to_align_with_direction()
     mesh_persp, _ = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd_persp, depth=9)
@@ -132,7 +126,7 @@ for i in range(num_samples):
     if exporting:
         o3d.io.write_triangle_mesh(str(export_path / f'mesh_pinhole_{i}.obj'), mesh_persp, write_triangle_uvs=True)
 
-    # Mesh for Orthographic Projection
+   
     pcd_ortho.estimate_normals()
     pcd_ortho.orient_normals_to_align_with_direction()
     mesh_ortho, _ = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd_ortho, depth=9)
@@ -140,3 +134,4 @@ for i in range(num_samples):
     o3d.visualization.draw_geometries([mesh_ortho])
     if exporting:
         o3d.io.write_triangle_mesh(str(export_path / f'mesh_ortho_{i}.obj'), mesh_ortho, write_triangle_uvs=True)
+
