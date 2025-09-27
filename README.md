@@ -1,10 +1,12 @@
 # 🧠 3D Data Imaging with Python
 
-This repository provides a collection of Python scripts for 3D data imaging, point cloud processing, and mesh reconstruction using `Open3D` and other Python tools. It includes:
+This repository provides a collection of Python scripts for 3D data imaging, point cloud processing, mesh reconstruction, and 3D model generation using `Open3D`, `PyTorch`, `Diffusers`, and other powerful Python tools. It includes:
 
-- ✅ Ball Pivoting Algorithm for mesh reconstruction  
-- ✅ Poisson Surface Reconstruction  
+- ✅ Ball Pivoting Algorithm for mesh reconstruction
+- ✅ Poisson Surface Reconstruction
 - ✅ 2D to 3D conversion using monocular depth estimation and point cloud generation
+- ✅ Prompt-to-3D point cloud generation with Point-E
+- ✅ Prompt-to-3D model generation with Shap-E
 
 ---
 
@@ -13,6 +15,9 @@ This repository provides a collection of Python scripts for 3D data imaging, poi
 - [`Ballpivot.py`](./Ballpivot.py) — Generate surface meshes from point clouds using Ball Pivoting.
 - [`Poisson.py`](./Poisson.py) — Reconstruct watertight meshes using Poisson Surface Reconstruction.
 - [`2dto3d.py`](./2dto3d.py) — Convert 2D RGB images to 3D point clouds using depth estimation.
+- [`PointE.py`](./PointE.py) — Generate 3D point clouds from text prompts using OpenAI's Point-E.
+- [`ShapE.py`](./ShapE.py) — Generate 3D textured meshes from text prompts using OpenAI's Shap-E.
+- [`shapE.ipynb`](./shapE.ipynb) — A Jupyter Notebook demonstrating Shap-E text-to-3D generation.
 
 ---
 
@@ -30,7 +35,11 @@ pip install open3d numpy matplotlib
 pip install torch torchvision
 pip install timm  # Required for MiDaS
 ```
+> For Point-E and Shap-E, install diffusers and transformers, along with torch if not already installed:
 
+```bash
+pip install torch transformers diffusers accelerate
+```
 ---
 
 ## 📌 Features
@@ -95,6 +104,43 @@ python 2dto3d.py --image path_to_your_image.jpg
 
 ---
 
+### 4. Point-E: Prompt-to-3D Point Cloud Generation
+
+Point-E is a system for generating 3D point clouds from text prompts. It first generates a synthetic view and then uses a point cloud diffusion model to create the 3D representation.
+
+**Run:**
+
+```bash
+python PointE.py --prompt "a high-resolution 3D point cloud of a futuristic spaceship"
+```
+
+Key Capabilities:
+- Generate diverse 3D point clouds directly from textual descriptions.
+- Ideal for quick conceptualization and prototyping of 3D forms.
+
+---
+
+### 5. Shap-E: Prompt-to-3D Textured Mesh Generation
+
+Shap-E is a conditional diffusion model that generates 3D assets, including textured implicit functions and explicit meshes, from various inputs like text or images.
+
+**Run:**
+
+```bash
+python ShapE.py --prompt "a detailed model of an antique teapot with a delicate pattern"
+```
+
+Key Capabilities:
+- Generate high-quality 3D textured meshes from text prompts.
+- Supports richer detail and surface properties compared to raw point clouds.
+- Suitable for creating ready-to-use 3D models.
+- An interactive demonstration is available in shapE.ipynb.
+
+# 🤖 Generated Example: War Robot
+Here's an example of a 3D war robot generated using Shap-E:
+
+<img src="https://github.com/Pyrius2k/3D-Data-Imaging/blob/main/robot.gif?raw=true" alt="War Robot 3D Model" width="300">
+
 ## 🧪 Demo Data
 
 - Sample point clouds: `data/sample_pointcloud.ply`
@@ -104,10 +150,9 @@ python 2dto3d.py --image path_to_your_image.jpg
 
 ## 🚀 Future Improvements
 
-- [ ] Add Marching Cubes algorithm  
-- [ ] GUI integration with Gradio or Streamlit  
-- [ ] Support for video-to-3D frame-by-frame  
-- [ ] Integration with LiDAR datasets  
+- [ ] GUI integration 
+- [ ] Integration with LiDAR datasets
+- [ ] Implement advanced mesh optimization techniques for Point-E and Shap-E outputs
 
 ---
 
