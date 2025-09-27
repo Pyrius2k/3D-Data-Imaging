@@ -136,7 +136,7 @@ Key Capabilities:
 - Suitable for creating ready-to-use 3D models.
 - An interactive demonstration is available in shapE.ipynb.
 
-# 🤖 Generated Example: War Robot
+#### 🤖 Generated Example: War Robot
 Here's an example of a 3D war robot generated using Shap-E:
 
 <img src="https://github.com/Pyrius2k/3D-Data-Imaging/blob/main/robot.gif?raw=true" alt="War Robot 3D Model" width="300">
