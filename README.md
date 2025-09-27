@@ -178,3 +178,6 @@ This project is licensed under the MIT License.
 
 📄 [![Ball Pivoting Algorithm (Bernardini et al.)](https://img.shields.io/badge/Ball%20Pivoting%20Algorithm-red?style=for-the-badge)](https://www.researchgate.net/publication/220494622_The_Ball-Pivoting_Algorithm_for_Surface_Reconstruction)
 
+📄 [![Point-E (Chen et al.)](https://img.shields.io/badge/Ball%20Pivoting%20Algorithm-red?style=for-the-badge)]([https://www.researchgate.net/publication/220494622_The_Ball-Pivoting_Algorithm_for_Surface_Reconstruction](https://arxiv.org/abs/2212.08751))
+
+
